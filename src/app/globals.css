@@ -1,0 +1,32 @@
+@import "tailwindcss";
+
+@layer utilities {
+  .animate-leg-swap {
+    animation: leg-swap 0.2s infinite alternate;
+  }
+
+  .animate-flap {
+    animation: wing-flap 0.5s infinite alternate;
+  }
+}
+
+@keyframes leg-swap {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes wing-flap {
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(-5px);
+  }
+}
