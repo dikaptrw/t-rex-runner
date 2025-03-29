@@ -7,7 +7,6 @@ import {
   DinoState,
   ObstacleType,
   GAME_CONFIG,
-  Block,
 } from "@/types";
 
 export const useGameLogic = () => {
@@ -143,17 +142,18 @@ export const useGameLogic = () => {
     }));
   }, [dino.state, gameState.isGameOver]);
 
-  // Check collision between two blocks
   const checkCollision = useCallback(
-    (block1: Block, block2: Block): boolean => {
+    (actualDino: Dino, actualObs: Obstacle): boolean => {
       // Add a small buffer to make collision detection more forgiving
-      const buffer = GAME_CONFIG.BLOCK_SIZE * 0.2;
+      const buffer = 10;
 
       return (
-        block1.x + buffer < block2.x + block2.width - buffer &&
-        block1.x + block1.width - buffer > block2.x + buffer &&
-        block1.y + buffer < block2.y + block2.height - buffer &&
-        block1.y + block1.height - buffer > block2.y + buffer
+        actualDino.x + actualDino.width - buffer > actualObs.x + buffer &&
+        actualDino.x + buffer < actualObs.x + actualObs.width - buffer &&
+        Math.abs(actualDino.y) + actualDino.height - buffer >
+          actualObs.y + buffer &&
+        Math.abs(actualDino.y) - buffer <
+          actualObs.y + actualObs.height + buffer
       );
     },
     []
@@ -168,32 +168,34 @@ export const useGameLogic = () => {
     ];
 
     const randomType = types[Math.floor(Math.random() * types.length)];
+    // const randomType = types[1]; // for test
     let width, height, y;
 
     switch (randomType) {
       case ObstacleType.CACTUS_SMALL:
-        width = 2 * GAME_CONFIG.BLOCK_SIZE;
+        width = 1.5 * GAME_CONFIG.BLOCK_SIZE;
         height = 3 * GAME_CONFIG.BLOCK_SIZE;
-        y = 0;
+        y = GAME_CONFIG.GROUND_HEIGHT; // Ground level
         break;
       case ObstacleType.CACTUS_LARGE:
-        width = 3 * GAME_CONFIG.BLOCK_SIZE;
+        width = 2 * GAME_CONFIG.BLOCK_SIZE;
         height = 4 * GAME_CONFIG.BLOCK_SIZE;
-        y = 0;
+        y = GAME_CONFIG.GROUND_HEIGHT; // Ground level
         break;
       case ObstacleType.PTERODACTYL:
         width = 4 * GAME_CONFIG.BLOCK_SIZE;
         height = 2 * GAME_CONFIG.BLOCK_SIZE;
-        // Random height for pterodactyl (either low, middle, or high)
+        // Random height for pterodactyl (low, middle, high)
         const heights = [1, 3, 5];
         y =
+          GAME_CONFIG.GROUND_HEIGHT +
           heights[Math.floor(Math.random() * heights.length)] *
-          GAME_CONFIG.BLOCK_SIZE;
+            GAME_CONFIG.BLOCK_SIZE;
         break;
       default:
         width = 2 * GAME_CONFIG.BLOCK_SIZE;
         height = 3 * GAME_CONFIG.BLOCK_SIZE;
-        y = 0;
+        y = GAME_CONFIG.GROUND_HEIGHT;
     }
 
     return {
@@ -254,6 +256,13 @@ export const useGameLogic = () => {
         if (prev.state === DinoState.JUMPING) {
           const newVelocity = prev.jumpVelocity + GAME_CONFIG.GRAVITY;
           const newY = prev.y + newVelocity;
+
+          console.log({
+            jumpVel: prev.jumpVelocity,
+            newVelocity,
+            y: prev.y,
+            newY,
+          });
 
           // Check if dino has landed
           if (newY >= 0) {
@@ -325,30 +334,8 @@ export const useGameLogic = () => {
       });
 
       // Check for collisions
-      const dinoBlock = {
-        x: dino.x,
-        y:
-          GAME_CONFIG.CANVAS_HEIGHT -
-          GAME_CONFIG.GROUND_HEIGHT -
-          dino.height +
-          dino.y,
-        width: dino.width,
-        height: dino.height,
-      };
-
       for (const obstacle of obstacles) {
-        const obstacleBlock = {
-          x: obstacle.x,
-          y:
-            GAME_CONFIG.CANVAS_HEIGHT -
-            GAME_CONFIG.GROUND_HEIGHT -
-            obstacle.height +
-            obstacle.y,
-          width: obstacle.width,
-          height: obstacle.height,
-        };
-
-        if (checkCollision(dinoBlock, obstacleBlock)) {
+        if (checkCollision(dino, obstacle)) {
           gameOver();
           return;
         }
@@ -364,11 +351,8 @@ export const useGameLogic = () => {
       generateCloud,
       gameOver,
       checkCollision,
-      dino.height,
-      dino.width,
-      dino.x,
-      dino.y,
       obstacles,
+      dino,
     ]
   );
 

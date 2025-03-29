@@ -17,17 +17,17 @@ export interface Block {
 
 // Character states
 export enum DinoState {
-  RUNNING = 'running',
-  JUMPING = 'jumping',
-  DUCKING = 'ducking',
-  CRASHED = 'crashed'
+  RUNNING = "running",
+  JUMPING = "jumping",
+  DUCKING = "ducking",
+  CRASHED = "crashed",
 }
 
 // Obstacle types
 export enum ObstacleType {
-  CACTUS_SMALL = 'cactus-small',
-  CACTUS_LARGE = 'cactus-large',
-  PTERODACTYL = 'pterodactyl'
+  CACTUS_SMALL = "cactus-small",
+  CACTUS_LARGE = "cactus-large",
+  PTERODACTYL = "pterodactyl",
 }
 
 // Game element interfaces
@@ -48,13 +48,13 @@ export interface Cloud extends Block {
 export const GAME_CONFIG = {
   BLOCK_SIZE: 20,
   GROUND_HEIGHT: 20,
-  GRAVITY: 0.5, // Reduced gravity for smoother jumps
-  INITIAL_JUMP_VELOCITY: -12, // Increased jump velocity for higher jumps
-  INITIAL_GAME_SPEED: 6,
-  SPEED_INCREMENT: 0.001,
-  OBSTACLE_FREQUENCY: 0.02,
-  CLOUD_FREQUENCY: 0.01,
+  GRAVITY: 0.6, // Reduced gravity for smoother jumps
+  INITIAL_JUMP_VELOCITY: -14, // Increased jump velocity for higher jumps
+  INITIAL_GAME_SPEED: 3,
+  SPEED_INCREMENT: 0.00001,
+  OBSTACLE_FREQUENCY: 0.01,
+  CLOUD_FREQUENCY: 0.02,
   NIGHT_MODE_SCORE: 500,
   CANVAS_WIDTH: 800,
   CANVAS_HEIGHT: 300,
-}
+};

@@ -1,31 +1,16 @@
-import React from 'react';
-import { ObstacleType, GAME_CONFIG } from '@/types';
+import React from "react";
+import { ObstacleType } from "@/types";
 
 interface ObstacleProps {
   type: ObstacleType;
   x: number;
+  y: number;
+  width: number;
+  height: number;
 }
 
-const Obstacle: React.FC<ObstacleProps> = ({ type, x }) => {
-  const blockSize = GAME_CONFIG.BLOCK_SIZE;
-  
-  // Determine obstacle dimensions based on type
-  const getObstacleDimensions = () => {
-    switch (type) {
-      case ObstacleType.CACTUS_SMALL:
-        return { width: 2 * blockSize, height: 3 * blockSize };
-      case ObstacleType.CACTUS_LARGE:
-        return { width: 3 * blockSize, height: 4 * blockSize };
-      case ObstacleType.PTERODACTYL:
-        return { width: 4 * blockSize, height: 2 * blockSize };
-      default:
-        return { width: 2 * blockSize, height: 3 * blockSize };
-    }
-  };
-  
-  const { width, height } = getObstacleDimensions();
-  
-  // Render different obstacles based on type
+const Obstacle: React.FC<ObstacleProps> = ({ type, x, y, width, height }) => {
+  // Render obstacle based on type
   const renderObstacle = () => {
     switch (type) {
       case ObstacleType.CACTUS_SMALL:
@@ -38,124 +23,45 @@ const Obstacle: React.FC<ObstacleProps> = ({ type, x }) => {
         return renderSmallCactus();
     }
   };
-  
+
   // Small cactus
   const renderSmallCactus = () => (
-    <div className="relative" style={{ width: `${width}px`, height: `${height}px` }}>
-      {/* Main stem */}
-      <div className="absolute bg-black" style={{ 
-        width: `${blockSize/2}px`, 
-        height: `${3 * blockSize}px`, 
-        left: `${blockSize/2}px`, 
-        bottom: 0 
-      }}></div>
-      
-      {/* Left arm */}
-      <div className="absolute bg-black" style={{ 
-        width: `${blockSize/2}px`, 
-        height: `${blockSize}px`, 
-        left: 0, 
-        bottom: `${2 * blockSize}px` 
-      }}></div>
-      
-      {/* Right arm */}
-      <div className="absolute bg-black" style={{ 
-        width: `${blockSize/2}px`, 
-        height: `${blockSize}px`, 
-        left: `${blockSize}px`, 
-        bottom: `${1.5 * blockSize}px` 
-      }}></div>
+    <div className="relative w-full h-full">
+      <div className="absolute bg-black w-[20%] h-[100%] left-[40%] bottom-0"></div>
+      <div className="absolute bg-black w-[20%] h-[33%] left-0 bottom-[66%]"></div>
+      <div className="absolute bg-black w-[20%] h-[33%] right-0 bottom-[50%]"></div>
     </div>
   );
-  
+
   // Large cactus
   const renderLargeCactus = () => (
-    <div className="relative" style={{ width: `${width}px`, height: `${height}px` }}>
-      {/* Main stem */}
-      <div className="absolute bg-black" style={{ 
-        width: `${blockSize/2}px`, 
-        height: `${4 * blockSize}px`, 
-        left: `${blockSize}px`, 
-        bottom: 0 
-      }}></div>
-      
-      {/* Left stem */}
-      <div className="absolute bg-black" style={{ 
-        width: `${blockSize/2}px`, 
-        height: `${3 * blockSize}px`, 
-        left: 0, 
-        bottom: 0 
-      }}></div>
-      
-      {/* Right stem */}
-      <div className="absolute bg-black" style={{ 
-        width: `${blockSize/2}px`, 
-        height: `${3.5 * blockSize}px`, 
-        left: `${2 * blockSize}px`, 
-        bottom: 0 
-      }}></div>
-      
-      {/* Left arm */}
-      <div className="absolute bg-black" style={{ 
-        width: `${blockSize}px`, 
-        height: `${blockSize/2}px`, 
-        left: 0, 
-        bottom: `${2.5 * blockSize}px` 
-      }}></div>
-      
-      {/* Right arm */}
-      <div className="absolute bg-black" style={{ 
-        width: `${blockSize}px`, 
-        height: `${blockSize/2}px`, 
-        left: `${1.5 * blockSize}px`, 
-        bottom: `${3 * blockSize}px` 
-      }}></div>
+    <div className="relative w-full h-full">
+      <div className="absolute bg-black w-[20%] h-[100%] left-[33%] bottom-0"></div>
+      <div className="absolute bg-black w-[20%] h-[75%] left-0 bottom-0"></div>
+      <div className="absolute bg-black w-[20%] h-[87%] right-0 bottom-0"></div>
+      <div className="absolute bg-black w-[33%] h-[12%] left-0 bottom-[62%]"></div>
+      <div className="absolute bg-black w-[33%] h-[12%] right-[16%] bottom-[75%]"></div>
     </div>
   );
-  
+
   // Pterodactyl
   const renderPterodactyl = () => (
-    <div className="relative animate-flap" style={{ width: `${width}px`, height: `${height}px` }}>
-      {/* Body */}
-      <div className="absolute bg-black" style={{ 
-        width: `${2 * blockSize}px`, 
-        height: `${blockSize}px`, 
-        left: `${blockSize}px`, 
-        top: `${blockSize/2}px` 
-      }}></div>
-      
-      {/* Head */}
-      <div className="absolute bg-black" style={{ 
-        width: `${blockSize}px`, 
-        height: `${blockSize/2}px`, 
-        left: `${3 * blockSize}px`, 
-        top: `${blockSize/4}px` 
-      }}></div>
-      
-      {/* Beak */}
-      <div className="absolute bg-black" style={{ 
-        width: `${blockSize/2}px`, 
-        height: `${blockSize/4}px`, 
-        left: `${3.5 * blockSize}px`, 
-        top: `${blockSize/3}px` 
-      }}></div>
-      
-      {/* Wings - animated with CSS */}
-      <div className="absolute bg-black" style={{ 
-        width: `${2 * blockSize}px`, 
-        height: `${blockSize/2}px`, 
-        left: `${blockSize}px`, 
-        top: 0 
-      }}></div>
+    <div className="relative w-full h-full animate-flap">
+      <div className="absolute bg-black w-[50%] h-[50%] left-[25%] top-[25%]"></div>
+      <div className="absolute bg-black w-[25%] h-[25%] right-0 top-[12.5%]"></div>
+      <div className="absolute bg-black w-[12.5%] h-[12.5%] right-0 top-0"></div>
+      <div className="absolute bg-black w-[50%] h-[25%] left-[25%] top-0"></div>
     </div>
   );
-  
+
   return (
-    <div 
-      className="absolute" 
-      style={{ 
-        bottom: `${GAME_CONFIG.GROUND_HEIGHT}px`,
+    <div
+      className="absolute"
+      style={{
+        width: `${width}px`,
+        height: `${height}px`,
         left: `${x}px`,
+        bottom: `${y}px`, // Uses y directly instead of assuming ground level
       }}
     >
       {renderObstacle()}

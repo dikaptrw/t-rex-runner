@@ -16,8 +16,8 @@ const Score: React.FC<ScoreProps> = ({
     return score.toString().padStart(5, "0");
   };
 
-  const formattedScore = formatScore(score);
-  const formattedHighScore = formatScore(highScore);
+  const formattedScore = formatScore(Math.floor(score));
+  const formattedHighScore = formatScore(Math.floor(highScore));
 
   return (
     <div

@@ -28,7 +28,13 @@ export default function Home() {
       <div className="relative">
         <GameContainer isNightMode={isNightMode}>
           {/* Dino character */}
-          <Dino state={dino.state} y={dino.y} />
+          <Dino
+            state={dino.state}
+            x={dino.x}
+            y={dino.y}
+            width={dino.width}
+            height={dino.height}
+          />
 
           {/* Ground */}
           <Ground />
@@ -39,6 +45,9 @@ export default function Home() {
               key={`obstacle-${index}`}
               type={obstacle.type}
               x={obstacle.x}
+              y={obstacle.y}
+              width={obstacle.width}
+              height={obstacle.height}
             />
           ))}
 
