@@ -33,6 +33,13 @@ export const useGameLogic = () => {
   const [clouds, setClouds] = useState<Cloud[]>([]);
   const [isNightMode, setIsNightMode] = useState(false);
 
+  // Touch control references
+  const isTouchingRef = useRef<boolean>(false);
+  const touchTimerRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Add this ref to track duck intention
+  const wantsToDuckRef = useRef<boolean>(false);
+
   // Animation frame reference
   const animationFrameRef = useRef<number>(0);
   const lastTimeRef = useRef<number>(0);
@@ -100,6 +107,9 @@ export const useGameLogic = () => {
 
   // Jump
   const jump = useCallback(() => {
+    // Reset duck intention
+    wantsToDuckRef.current = false;
+
     // Only allow jumping if the dino is on the ground and not already jumping
     if (
       !canJumpRef.current ||
@@ -120,6 +130,8 @@ export const useGameLogic = () => {
 
   // Duck
   const duck = useCallback(() => {
+    if (dino.state === DinoState.JUMPING) wantsToDuckRef.current = true;
+
     if (dino.state === DinoState.JUMPING || gameState.isGameOver) return;
 
     setDino((prev) => ({
@@ -132,6 +144,9 @@ export const useGameLogic = () => {
 
   // Stop ducking
   const stopDucking = useCallback(() => {
+    if (wantsToDuckRef.current && dino.state === DinoState.JUMPING)
+      wantsToDuckRef.current = false;
+
     if (dino.state !== DinoState.DUCKING || gameState.isGameOver) return;
 
     setDino((prev) => ({
@@ -262,12 +277,23 @@ export const useGameLogic = () => {
             // Allow jumping again once landed
             canJumpRef.current = true;
 
-            return {
-              ...prev,
-              y: 0,
-              jumpVelocity: 0,
-              state: DinoState.RUNNING,
-            };
+            if (wantsToDuckRef.current) {
+              return {
+                ...prev,
+                y: 0,
+                jumpVelocity: 0,
+                state: DinoState.DUCKING,
+                width: 3 * GAME_CONFIG.BLOCK_SIZE,
+                height: 2 * GAME_CONFIG.BLOCK_SIZE,
+              };
+            } else {
+              return {
+                ...prev,
+                y: 0,
+                jumpVelocity: 0,
+                state: DinoState.RUNNING,
+              };
+            }
           }
 
           return {
@@ -400,6 +426,87 @@ export const useGameLogic = () => {
     duck,
     stopDucking,
   ]);
+
+  // Handle touch events for mobile
+  const handleTouchStart = useCallback(() => {
+    // If the game hasn't started yet, start the game
+    if (!gameState.isPlaying) {
+      startGame();
+      return;
+    }
+
+    isTouchingRef.current = true;
+
+    // Start ducking after a short delay (to distinguish between tap and hold)
+    touchTimerRef.current = setTimeout(() => {
+      if (isTouchingRef.current) {
+        duck();
+      }
+    }, 150); // 150ms delay before considering it a hold
+  }, [duck, gameState.isPlaying, startGame]);
+
+  // Touch end handler
+  const handleTouchEnd = useCallback(() => {
+    isTouchingRef.current = false;
+
+    // Clear the duck timer if it exists
+    if (touchTimerRef.current) {
+      clearTimeout(touchTimerRef.current);
+      touchTimerRef.current = null;
+    }
+
+    // If touch duration was short, treat it as a jump
+    stopDucking();
+
+    if (!gameState.isPlaying && !gameState.isGameOver) {
+      startGame();
+    } else if (dino.state !== DinoState.DUCKING) {
+      jump();
+    }
+  }, [
+    jump,
+    stopDucking,
+    startGame,
+    gameState.isPlaying,
+    gameState.isGameOver,
+    dino.state,
+  ]);
+
+  // Add touch event listeners in a useEffect
+  useEffect(() => {
+    const handleTouchStartWrapper = (e: TouchEvent) => {
+      e.preventDefault();
+      handleTouchStart();
+    };
+
+    const handleTouchEndWrapper = (e: TouchEvent) => {
+      e.preventDefault();
+      handleTouchEnd();
+    };
+
+    // Add touch event listeners
+    window.addEventListener("touchstart", handleTouchStartWrapper, {
+      passive: false,
+    });
+    window.addEventListener("touchend", handleTouchEndWrapper, {
+      passive: false,
+    });
+    window.addEventListener("touchcancel", handleTouchEndWrapper, {
+      passive: false,
+    });
+
+    return () => {
+      // Cleanup touch event listeners
+      window.removeEventListener("touchstart", handleTouchStartWrapper);
+      window.removeEventListener("touchend", handleTouchEndWrapper);
+      window.removeEventListener("touchcancel", handleTouchEndWrapper);
+
+      // Clear any pending timers
+      if (touchTimerRef.current) {
+        clearTimeout(touchTimerRef.current);
+      }
+    };
+  }, [handleTouchStart, handleTouchEnd]);
 
   return {
     gameState,
