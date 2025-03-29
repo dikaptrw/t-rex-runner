@@ -484,22 +484,28 @@ export const useGameLogic = () => {
       handleTouchEnd();
     };
 
+    const containerEl = document.getElementById("gameWrapper");
+
     // Add touch event listeners
-    window.addEventListener("touchstart", handleTouchStartWrapper, {
-      passive: false,
-    });
-    window.addEventListener("touchend", handleTouchEndWrapper, {
-      passive: false,
-    });
-    window.addEventListener("touchcancel", handleTouchEndWrapper, {
-      passive: false,
-    });
+    if (containerEl) {
+      containerEl.addEventListener("touchstart", handleTouchStartWrapper, {
+        passive: false,
+      });
+      containerEl.addEventListener("touchend", handleTouchEndWrapper, {
+        passive: false,
+      });
+      containerEl.addEventListener("touchcancel", handleTouchEndWrapper, {
+        passive: false,
+      });
+    }
 
     return () => {
-      // Cleanup touch event listeners
-      window.removeEventListener("touchstart", handleTouchStartWrapper);
-      window.removeEventListener("touchend", handleTouchEndWrapper);
-      window.removeEventListener("touchcancel", handleTouchEndWrapper);
+      if (containerEl) {
+        // Cleanup touch event listeners
+        containerEl.removeEventListener("touchstart", handleTouchStartWrapper);
+        containerEl.removeEventListener("touchend", handleTouchEndWrapper);
+        containerEl.removeEventListener("touchcancel", handleTouchEndWrapper);
+      }
 
       // Clear any pending timers
       if (touchTimerRef.current) {

@@ -23,7 +23,10 @@ export default function Home() {
   };
 
   return (
-    <main className="flex min-h-[calc(100dvh-env(safe-area-inset-bottom))] flex-col items-center justify-center p-4">
+    <main
+      id="gameWrapper"
+      className="flex min-h-[calc(100dvh-env(safe-area-inset-bottom))] flex-col items-center justify-center p-4"
+    >
       <div className="scale-[42%] sm:scale-[60%] md:scale-[80%] lg:scale-100">
         <h1 className="text-center text-3xl font-bold mb-6">T-Rex Runner</h1>
 
