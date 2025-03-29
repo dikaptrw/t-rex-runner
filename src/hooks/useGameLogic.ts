@@ -145,7 +145,7 @@ export const useGameLogic = () => {
   const checkCollision = useCallback(
     (actualDino: Dino, actualObs: Obstacle): boolean => {
       // Add a small buffer to make collision detection more forgiving
-      const buffer = 10;
+      const buffer = 7;
 
       return (
         actualDino.x + actualDino.width - buffer > actualObs.x + buffer &&
@@ -256,13 +256,6 @@ export const useGameLogic = () => {
         if (prev.state === DinoState.JUMPING) {
           const newVelocity = prev.jumpVelocity + GAME_CONFIG.GRAVITY;
           const newY = prev.y + newVelocity;
-
-          console.log({
-            jumpVel: prev.jumpVelocity,
-            newVelocity,
-            y: prev.y,
-            newY,
-          });
 
           // Check if dino has landed
           if (newY >= 0) {
