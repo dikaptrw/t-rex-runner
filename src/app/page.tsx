@@ -95,7 +95,7 @@ export default function Home() {
 
           {/* Game controls instructions */}
           <div className="mt-6 text-center text-xs">
-            <p>Controls: SPACE/UP = Jump, DOWN = Duck</p>
+            <p>Controls: SPACE/UP/TAP = Jump, DOWN/HOLD = Duck</p>
           </div>
 
           {/* Sound effects */}
