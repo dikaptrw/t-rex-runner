@@ -12,8 +12,8 @@ const GameOver: React.FC<GameOverProps> = ({ score, onRestart }) => {
   return (
     <div className="absolute inset-0 flex flex-col items-center justify-center bg-white bg-opacity-70">
       <div className="text-center">
-        <h2 className="text-3xl font-bold mb-4">GAME OVER</h2>
-        <p className="text-xl mb-6">Score: {Math.floor(score)}</p>
+        <h2 className="text-xl font-bold mb-4">GAME OVER</h2>
+        <p className="text-sm mb-3">Score: {Math.floor(score)}</p>
 
         {/* Restart button using block-based design */}
         <button

@@ -1,5 +1,6 @@
 import React from "react";
 import { DinoState, GAME_CONFIG } from "@/types";
+import { cn } from "@/utils";
 
 interface DinoProps {
   state: DinoState;
@@ -7,9 +8,17 @@ interface DinoProps {
   y: number;
   width: number;
   height: number;
+  isNightMode: boolean;
 }
 
-const Dino: React.FC<DinoProps> = ({ state, x, y, height, width }) => {
+const Dino: React.FC<DinoProps> = ({
+  state,
+  x,
+  y,
+  height,
+  width,
+  isNightMode,
+}) => {
   const blockSize = GAME_CONFIG.BLOCK_SIZE;
 
   // Determine which dino sprite to show based on state
@@ -36,7 +45,7 @@ const Dino: React.FC<DinoProps> = ({ state, x, y, height, width }) => {
     >
       {/* Head */}
       <div
-        className="absolute bg-black"
+        className={cn("absolute", isNightMode ? "bg-[#B6B6B6]" : "bg-black")}
         style={{
           width: `${blockSize}px`,
           height: `${blockSize}px`,
@@ -47,7 +56,7 @@ const Dino: React.FC<DinoProps> = ({ state, x, y, height, width }) => {
 
       {/* Body */}
       <div
-        className="absolute bg-black"
+        className={cn("absolute", isNightMode ? "bg-[#B6B6B6]" : "bg-black")}
         style={{
           width: `${blockSize}px`,
           height: `${2 * blockSize}px`,
@@ -58,7 +67,7 @@ const Dino: React.FC<DinoProps> = ({ state, x, y, height, width }) => {
 
       {/* Leg */}
       <div
-        className="absolute bg-black"
+        className={cn("absolute", isNightMode ? "bg-[#B6B6B6]" : "bg-black")}
         style={{
           width: `${blockSize}px`,
           height: `${blockSize}px`,
@@ -69,7 +78,7 @@ const Dino: React.FC<DinoProps> = ({ state, x, y, height, width }) => {
 
       {/* Arm */}
       <div
-        className="absolute bg-black"
+        className={cn("absolute", isNightMode ? "bg-[#B6B6B6]" : "bg-black")}
         style={{
           width: `${blockSize / 2}px`,
           height: `${blockSize / 2}px`,
@@ -88,7 +97,7 @@ const Dino: React.FC<DinoProps> = ({ state, x, y, height, width }) => {
     >
       {/* Head */}
       <div
-        className="absolute bg-black"
+        className={cn("absolute", isNightMode ? "bg-[#B6B6B6]" : "bg-black")}
         style={{
           width: `${blockSize}px`,
           height: `${blockSize}px`,
@@ -99,7 +108,7 @@ const Dino: React.FC<DinoProps> = ({ state, x, y, height, width }) => {
 
       {/* Body */}
       <div
-        className="absolute bg-black"
+        className={cn("absolute", isNightMode ? "bg-[#B6B6B6]" : "bg-black")}
         style={{
           width: `${blockSize}px`,
           height: `${2 * blockSize}px`,
@@ -110,7 +119,10 @@ const Dino: React.FC<DinoProps> = ({ state, x, y, height, width }) => {
 
       {/* Legs - animated with CSS */}
       <div
-        className="absolute bg-black animate-leg-swap"
+        className={cn(
+          "absolute animate-leg-swap",
+          isNightMode ? "bg-[#B6B6B6]" : "bg-black"
+        )}
         style={{
           width: `${blockSize}px`,
           height: `${blockSize}px`,
@@ -121,7 +133,7 @@ const Dino: React.FC<DinoProps> = ({ state, x, y, height, width }) => {
 
       {/* Arm */}
       <div
-        className="absolute bg-black"
+        className={cn("absolute", isNightMode ? "bg-[#B6B6B6]" : "bg-black")}
         style={{
           width: `${blockSize / 2}px`,
           height: `${blockSize / 2}px`,
@@ -140,7 +152,7 @@ const Dino: React.FC<DinoProps> = ({ state, x, y, height, width }) => {
     >
       {/* Head */}
       <div
-        className="absolute bg-black"
+        className={cn("absolute", isNightMode ? "bg-[#B6B6B6]" : "bg-black")}
         style={{
           width: `${blockSize}px`,
           height: `${blockSize / 2}px`,
@@ -152,7 +164,7 @@ const Dino: React.FC<DinoProps> = ({ state, x, y, height, width }) => {
 
       {/* Body */}
       <div
-        className="absolute bg-black"
+        className={cn("absolute", isNightMode ? "bg-[#B6B6B6]" : "bg-black")}
         style={{
           width: `${3 * blockSize}px`,
           height: `${blockSize}px`,
@@ -163,7 +175,10 @@ const Dino: React.FC<DinoProps> = ({ state, x, y, height, width }) => {
 
       {/* Legs */}
       <div
-        className="absolute bg-black animate-leg-swap"
+        className={cn(
+          "absolute animate-leg-swap",
+          isNightMode ? "bg-[#B6B6B6]" : "bg-black"
+        )}
         style={{
           width: `${blockSize}px`,
           height: `${blockSize / 2}px`,
@@ -183,7 +198,10 @@ const Dino: React.FC<DinoProps> = ({ state, x, y, height, width }) => {
       {/* Same as standing but with different color to indicate crash */}
       {/* Head */}
       <div
-        className="absolute bg-gray-700"
+        className={cn(
+          "absolute",
+          isNightMode ? "bg-[#B6B6B6]" : "bg-[#333333]"
+        )}
         style={{
           width: `${blockSize}px`,
           height: `${blockSize}px`,
@@ -194,7 +212,10 @@ const Dino: React.FC<DinoProps> = ({ state, x, y, height, width }) => {
 
       {/* Body */}
       <div
-        className="absolute bg-gray-700"
+        className={cn(
+          "absolute",
+          isNightMode ? "bg-[#B6B6B6]" : "bg-[#333333]"
+        )}
         style={{
           width: `${blockSize}px`,
           height: `${2 * blockSize}px`,
@@ -205,7 +226,10 @@ const Dino: React.FC<DinoProps> = ({ state, x, y, height, width }) => {
 
       {/* Leg */}
       <div
-        className="absolute bg-gray-700"
+        className={cn(
+          "absolute",
+          isNightMode ? "bg-[#B6B6B6]" : "bg-[#333333]"
+        )}
         style={{
           width: `${blockSize}px`,
           height: `${blockSize}px`,
@@ -216,7 +240,10 @@ const Dino: React.FC<DinoProps> = ({ state, x, y, height, width }) => {
 
       {/* Arm */}
       <div
-        className="absolute bg-gray-700"
+        className={cn(
+          "absolute",
+          isNightMode ? "bg-[#B6B6B6]" : "bg-[#333333]"
+        )}
         style={{
           width: `${blockSize / 2}px`,
           height: `${blockSize / 2}px`,

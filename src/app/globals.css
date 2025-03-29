@@ -1,5 +1,9 @@
 @import "tailwindcss";
 
+body {
+  overflow: hidden;
+}
+
 @layer utilities {
   .animate-leg-swap {
     animation: leg-swap 0.2s infinite alternate;

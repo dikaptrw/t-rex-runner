@@ -1,5 +1,6 @@
 import React from "react";
 import { ObstacleType } from "@/types";
+import { cn } from "@/utils";
 
 interface ObstacleProps {
   type: ObstacleType;
@@ -7,9 +8,17 @@ interface ObstacleProps {
   y: number;
   width: number;
   height: number;
+  isNightMode: boolean;
 }
 
-const Obstacle: React.FC<ObstacleProps> = ({ type, x, y, width, height }) => {
+const Obstacle = ({
+  type,
+  x,
+  y,
+  width,
+  height,
+  isNightMode,
+}: ObstacleProps) => {
   // Render obstacle based on type
   const renderObstacle = () => {
     switch (type) {
@@ -27,30 +36,90 @@ const Obstacle: React.FC<ObstacleProps> = ({ type, x, y, width, height }) => {
   // Small cactus
   const renderSmallCactus = () => (
     <div className="relative w-full h-full">
-      <div className="absolute bg-black w-[20%] h-[100%] left-[40%] bottom-0"></div>
-      <div className="absolute bg-black w-[20%] h-[33%] left-0 bottom-[66%]"></div>
-      <div className="absolute bg-black w-[20%] h-[33%] right-0 bottom-[50%]"></div>
+      <div
+        className={cn(
+          "absolute w-[20%] h-[100%] left-[40%] bottom-0",
+          isNightMode ? "bg-[#B6B6B6]" : "bg-black"
+        )}
+      ></div>
+      <div
+        className={cn(
+          "absolute w-[20%] h-[33%] left-0 bottom-[66%]",
+          isNightMode ? "bg-[#B6B6B6]" : "bg-black"
+        )}
+      ></div>
+      <div
+        className={cn(
+          "absolute w-[20%] h-[33%] right-0 bottom-[50%]",
+          isNightMode ? "bg-[#B6B6B6]" : "bg-black"
+        )}
+      ></div>
     </div>
   );
 
   // Large cactus
   const renderLargeCactus = () => (
     <div className="relative w-full h-full">
-      <div className="absolute bg-black w-[20%] h-[100%] left-[33%] bottom-0"></div>
-      <div className="absolute bg-black w-[20%] h-[75%] left-0 bottom-0"></div>
-      <div className="absolute bg-black w-[20%] h-[87%] right-0 bottom-0"></div>
-      <div className="absolute bg-black w-[33%] h-[12%] left-0 bottom-[62%]"></div>
-      <div className="absolute bg-black w-[33%] h-[12%] right-[16%] bottom-[75%]"></div>
+      <div
+        className={cn(
+          "absolute w-[20%] h-[100%] left-[33%] bottom-0",
+          isNightMode ? "bg-[#B6B6B6]" : "bg-black"
+        )}
+      ></div>
+      <div
+        className={cn(
+          "absolute w-[20%] h-[75%] left-0 bottom-0",
+          isNightMode ? "bg-[#B6B6B6]" : "bg-black"
+        )}
+      ></div>
+      <div
+        className={cn(
+          "absolute w-[20%] h-[87%] right-0 bottom-0",
+          isNightMode ? "bg-[#B6B6B6]" : "bg-black"
+        )}
+      ></div>
+      <div
+        className={cn(
+          "absolute w-[33%] h-[12%] left-0 bottom-[62%]",
+          isNightMode ? "bg-[#B6B6B6]" : "bg-black"
+        )}
+      ></div>
+      <div
+        className={cn(
+          "absolute w-[33%] h-[12%] right-[16%] bottom-[75%]",
+          isNightMode ? "bg-[#B6B6B6]" : "bg-black"
+        )}
+      ></div>
     </div>
   );
 
   // Pterodactyl
   const renderPterodactyl = () => (
     <div className="relative w-full h-full animate-flap">
-      <div className="absolute bg-black w-[50%] h-[50%] left-[25%] top-[25%]"></div>
-      <div className="absolute bg-black w-[25%] h-[25%] right-0 top-[12.5%]"></div>
-      <div className="absolute bg-black w-[12.5%] h-[12.5%] right-0 top-0"></div>
-      <div className="absolute bg-black w-[50%] h-[25%] left-[25%] top-0"></div>
+      <div
+        className={cn(
+          "absolute w-[50%] h-[50%] left-[25%] top-[25%]",
+          isNightMode ? "bg-[#B6B6B6]" : "bg-black"
+        )}
+      ></div>
+      <div
+        className={cn(
+          "absolute w-[25%] h-[25%] right-0 top-[12.5%]",
+          isNightMode ? "bg-[#B6B6B6]" : "bg-black"
+        )}
+      ></div>
+      <div
+        className={cn(
+          "absolute w-[12.5%] h-[12.5%] right-0 top-0",
+          isNightMode ? "bg-[#B6B6B6]" : "bg-black"
+        )}
+      ></div>
+      <div
+        className={cn(
+          "absolute w-[50%] h-[25%] left-[25%] top-0",
+          isNightMode ? "bg-[#B6B6B6]" : "bg-black"
+        )}
+      ></div>
     </div>
   );
 

@@ -31,7 +31,8 @@ const SoundEffects: React.FC<SoundEffectsProps> = ({
         .play()
         .catch((e) => console.error("Error playing jump sound:", e));
     }
-  }, [isJumping, isPlaying]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isJumping]);
 
   // Play game over sound
   useEffect(() => {
@@ -58,7 +59,9 @@ const SoundEffects: React.FC<SoundEffectsProps> = ({
         .catch((e) => console.error("Error playing point sound:", e));
     }
     prevScoreRef.current = score;
-  }, [score, isPlaying]);
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [score]);
 
   return (
     <div className="hidden">
