@@ -201,7 +201,7 @@ export const useGameLogic = () => {
         width = 4 * GAME_CONFIG.BLOCK_SIZE;
         height = 2 * GAME_CONFIG.BLOCK_SIZE;
         // Random height for pterodactyl (low, middle, high)
-        const heights = [1, 3, 5];
+        const heights = [1, 2, 3, 4, 5];
         y =
           GAME_CONFIG.GROUND_HEIGHT +
           heights[Math.floor(Math.random() * heights.length)] *
