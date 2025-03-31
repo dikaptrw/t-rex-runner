@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.2] - 2025-03-31
+
+### Updated
+
+- Updated the`generateObstacle` logic for better difficulty balance.
+- Updated the pterodactyl logic to contain more height for more game challenges.
+
 ## [1.0.1] - 2025-03-29
 
 ### Fixed
