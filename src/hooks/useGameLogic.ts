@@ -321,7 +321,7 @@ export const useGameLogic = () => {
           Math.random() < GAME_CONFIG.OBSTACLE_FREQUENCY &&
           (updatedObstacles.length === 0 ||
             updatedObstacles[updatedObstacles.length - 1].x <
-              GAME_CONFIG.CANVAS_WIDTH - 200)
+              GAME_CONFIG.CANVAS_WIDTH - 350)
         ) {
           updatedObstacles.push(generateObstacle());
         }
