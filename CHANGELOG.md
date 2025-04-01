@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.1.0] - 2025-04-01
+
+### Added
+
+- Added the high score storage with Firestore (optional) or local storage.
+- Added the player name support alongside high score storage.
+
+### Updated
+
+- Updated the `Cloud` component to improve readability and maintainability.
+
 ## [1.0.2] - 2025-03-31
 
 ### Updated
