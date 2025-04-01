@@ -9,7 +9,9 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@firebase/firestore": "^4.7.10",
     "clsx": "^2.1.1",
+    "firebase": "^11.6.0",
     "next": "15.2.4",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
