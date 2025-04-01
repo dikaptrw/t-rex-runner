@@ -69,7 +69,12 @@ const Score: React.FC<ScoreProps> = ({
             onTouchStart={(e) => {
               e.stopPropagation();
             }}
-            onChange={(e) => setPlayer?.(e.target.value || "")}
+            onChange={(e) => {
+              const value = e.target.value || "";
+              if (value.length < 10) {
+                setPlayer?.(value);
+              }
+            }}
           />
         </label>
 
