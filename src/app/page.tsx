@@ -83,6 +83,7 @@ export default function Home() {
               player={gameState.player}
               highScorePlayer={gameState.highScorePlayer}
               setPlayer={setPlayer}
+              isPlaying={gameState.isPlaying}
             />
 
             {/* Game over screen */}

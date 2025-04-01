@@ -6,6 +6,7 @@ interface ScoreProps {
   player?: string;
   highScorePlayer?: string;
   isNightMode?: boolean;
+  isPlaying?: boolean;
   setPlayer?: (name: string) => void;
 }
 
@@ -15,6 +16,7 @@ const Score: React.FC<ScoreProps> = ({
   highScorePlayer,
   isNightMode = false,
   player,
+  isPlaying,
   setPlayer,
 }) => {
   // Format score with leading zeros
@@ -53,8 +55,9 @@ const Score: React.FC<ScoreProps> = ({
           <input
             ref={inputRef}
             type="text"
-            value={player}
-            className="border-b focus:outline-none py-0 px-1 min-w-[100px] max-w-[250px]"
+            disabled={isPlaying}
+            value={isPlaying ? player || "Unknown" : player}
+            className="border-b focus:outline-none py-0 px-1 min-w-[86px] max-w-[250px]"
             style={{ width }}
             onKeyDown={(e) => {
               e.stopPropagation();
