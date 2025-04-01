@@ -8,7 +8,13 @@ import {
   ObstacleType,
   GAME_CONFIG,
 } from "@/types";
-import { collection, doc, getDoc, updateDoc } from "@firebase/firestore";
+import {
+  collection,
+  doc,
+  getDoc,
+  setDoc,
+  updateDoc,
+} from "@firebase/firestore";
 import { ENV } from "@/constants";
 import db from "@/utils/firestore";
 
@@ -129,6 +135,11 @@ export const useGameLogic = () => {
       getDoc(docRef).then((res) => {
         if (res.exists()) {
           updateDoc(docRef, {
+            highScore: Math.floor(highScore),
+            playerName: highScorePlayer,
+          });
+        } else {
+          setDoc(docRef, {
             highScore: Math.floor(highScore),
             playerName: highScorePlayer,
           });
