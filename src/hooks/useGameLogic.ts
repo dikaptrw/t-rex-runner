@@ -237,14 +237,19 @@ export const useGameLogic = () => {
       // Add a small buffer to make collision detection more forgiving
       const buffer = 7;
 
-      return (
-        actualDino.x + actualDino.width - buffer > actualObs.x + buffer &&
-        actualDino.x + buffer < actualObs.x + actualObs.width - buffer &&
-        Math.abs(actualDino.y) + actualDino.height - buffer >
-          actualObs.y + buffer &&
-        Math.abs(actualDino.y) - buffer <
-          actualObs.y + actualObs.height + buffer
-      );
+      return actualObs.type === ObstacleType.PTERODACTYL && actualObs.y === 60
+        ? actualDino.x + actualDino.width - buffer > actualObs.x + buffer &&
+            actualDino.x + buffer < actualObs.x + actualObs.width - buffer &&
+            // We remove the buffer for this specific case to make the collision match the UI
+            Math.abs(actualDino.y) + actualDino.height + 1 > actualObs.y &&
+            Math.abs(actualDino.y) - buffer <
+              actualObs.y + actualObs.height + buffer
+        : actualDino.x + actualDino.width - buffer > actualObs.x + buffer &&
+            actualDino.x + buffer < actualObs.x + actualObs.width - buffer &&
+            Math.abs(actualDino.y) + actualDino.height - buffer >
+              actualObs.y + buffer &&
+            Math.abs(actualDino.y) - buffer <
+              actualObs.y + actualObs.height + buffer;
     },
     []
   );
