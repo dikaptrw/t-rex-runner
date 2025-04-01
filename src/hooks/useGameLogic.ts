@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback, useRef } from "react";
+import { useEffect, useState, useCallback, useRef, useMemo } from "react";
 import {
   GameState,
   Dino,
@@ -8,6 +8,9 @@ import {
   ObstacleType,
   GAME_CONFIG,
 } from "@/types";
+import { collection, doc, getDoc, updateDoc } from "@firebase/firestore";
+import { ENV } from "@/constants";
+import db from "@/utils/firestore";
 
 export const useGameLogic = () => {
   // Game state
@@ -16,7 +19,9 @@ export const useGameLogic = () => {
     isGameOver: false,
     score: 0,
     highScore: 0,
+    highScorePlayer: "",
     speed: GAME_CONFIG.INITIAL_GAME_SPEED,
+    player: "",
   });
 
   // Game elements
@@ -44,16 +49,44 @@ export const useGameLogic = () => {
   const animationFrameRef = useRef<number>(0);
   const lastTimeRef = useRef<number>(0);
   const canJumpRef = useRef<boolean>(true);
+  const collectionRef = useMemo(() => {
+    return collection(db, "dikaptrw-profile", ENV, "games");
+  }, []);
+  const docRef = useMemo(() => {
+    return doc(collectionRef, process.env.NEXT_PUBLIC_T_REX_GAME_DOC_ID);
+  }, [collectionRef]);
 
-  // Check if high score exists in local storage
+  // Check if high score exists in local storage or firestore
   useEffect(() => {
-    const storedHighScore = localStorage.getItem("trexHighScore");
-    if (storedHighScore) {
+    if (process.env.NEXT_PUBLIC_HIGH_SCORE_MODE === "firestore") {
+      getDoc(docRef).then((res) => {
+        const data = res.data();
+
+        if (data) {
+          setGameState((prev) => ({
+            ...prev,
+            highScore: data.highScore,
+            highScorePlayer: data.playerName,
+          }));
+        }
+      });
+    } else {
+      const storedHighScore = localStorage.getItem("trexHighScore");
+      const storedHighScorePlayer = localStorage.getItem("trexHighScorePlayer");
+
       setGameState((prev) => ({
         ...prev,
-        highScore: parseInt(storedHighScore),
+        highScore: storedHighScore ? parseInt(storedHighScore) : prev.highScore,
+        highScorePlayer: storedHighScorePlayer || prev.highScorePlayer,
       }));
     }
+  }, [docRef]);
+
+  const setPlayer = useCallback((name: string) => {
+    setGameState((prev) => ({
+      ...prev,
+      player: name,
+    }));
   }, []);
 
   // Start game
@@ -63,7 +96,9 @@ export const useGameLogic = () => {
       isGameOver: false,
       score: 0,
       highScore: gameState.highScore,
+      highScorePlayer: gameState.highScorePlayer,
       speed: GAME_CONFIG.INITIAL_GAME_SPEED,
+      player: gameState.player,
     });
 
     setDino({
@@ -80,22 +115,62 @@ export const useGameLogic = () => {
     setIsNightMode(false);
     lastTimeRef.current = 0;
     canJumpRef.current = true;
-  }, [gameState.highScore]);
+  }, [gameState.highScore, gameState.highScorePlayer, gameState.player]);
+
+  // Handle high score on firestore
+  const updateHighScoreFirestore = useCallback(
+    ({
+      highScore,
+      highScorePlayer,
+    }: {
+      highScore: number;
+      highScorePlayer: string;
+    }) => {
+      getDoc(docRef).then((res) => {
+        if (res.exists()) {
+          updateDoc(docRef, {
+            highScore: Math.floor(highScore),
+            playerName: highScorePlayer,
+          });
+        }
+      });
+    },
+    [docRef]
+  );
 
   // Game over
   const gameOver = useCallback(() => {
     setGameState((prev) => {
       // Update high score if current score is higher
-      const newHighScore = Math.max(prev.score, prev.highScore);
+      let newHighScore = prev.highScore;
+      let newHighScorePlayer = prev.highScorePlayer;
+      const currentNewHighScore = Math.max(prev.score, prev.highScore);
 
-      // Save high score to local storage
-      localStorage.setItem("trexHighScore", newHighScore.toString());
+      if (currentNewHighScore > prev.highScore) {
+        newHighScore = currentNewHighScore;
+        newHighScorePlayer = gameState.player || "Unknown";
+
+        if (process.env.NEXT_PUBLIC_HIGH_SCORE_MODE === "firestore") {
+          updateHighScoreFirestore({
+            highScore: newHighScore,
+            highScorePlayer: newHighScorePlayer,
+          });
+        } else {
+          // Save high score to local storage
+          localStorage.setItem("trexHighScore", newHighScore.toString());
+          localStorage.setItem(
+            "trexHighScorePlayer",
+            newHighScorePlayer.toString()
+          );
+        }
+      }
 
       return {
         ...prev,
         isPlaying: false,
         isGameOver: true,
         highScore: newHighScore,
+        highScorePlayer: newHighScorePlayer,
       };
     });
 
@@ -103,7 +178,7 @@ export const useGameLogic = () => {
       ...prev,
       state: DinoState.CRASHED,
     }));
-  }, []);
+  }, [gameState.player, updateHighScoreFirestore]);
 
   // Jump
   const jump = useCallback(() => {
@@ -183,7 +258,7 @@ export const useGameLogic = () => {
     ];
 
     const randomType = types[Math.floor(Math.random() * types.length)];
-    // const randomType = types[1]; // for test
+    // const randomType = types[2]; // for test
     let width, height, y;
 
     switch (randomType) {
@@ -202,6 +277,7 @@ export const useGameLogic = () => {
         height = 2 * GAME_CONFIG.BLOCK_SIZE;
         // Random height for pterodactyl (low, middle, high)
         const heights = [1, 2, 3, 4, 5];
+        // const heights = [2]; // for test
         y =
           GAME_CONFIG.GROUND_HEIGHT +
           heights[Math.floor(Math.random() * heights.length)] *
@@ -523,5 +599,6 @@ export const useGameLogic = () => {
     startGame,
     jump,
     duck,
+    setPlayer,
   };
 };

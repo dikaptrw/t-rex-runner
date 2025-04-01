@@ -4,16 +4,19 @@ import { GAME_CONFIG } from "@/types";
 interface GameOverProps {
   score: number;
   onRestart: () => void;
+  player: string;
 }
 
-const GameOver: React.FC<GameOverProps> = ({ score, onRestart }) => {
+const GameOver: React.FC<GameOverProps> = ({ score, player, onRestart }) => {
   const blockSize = GAME_CONFIG.BLOCK_SIZE;
 
   return (
     <div className="absolute inset-0 flex flex-col items-center justify-center bg-white bg-opacity-70">
-      <div className="text-center">
+      <div className="text-center mt-5">
         <h2 className="text-xl font-bold mb-4">GAME OVER</h2>
-        <p className="text-sm mb-3">Score: {Math.floor(score)}</p>
+        <p className="text-sm mb-3">
+          Score: {Math.floor(score)} ({player || "Unknown"})
+        </p>
 
         {/* Restart button using block-based design */}
         <button

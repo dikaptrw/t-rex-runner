@@ -4,6 +4,8 @@ export interface GameState {
   isGameOver: boolean;
   score: number;
   highScore: number;
+  highScorePlayer: string;
+  player: string;
   speed: number;
 }
 

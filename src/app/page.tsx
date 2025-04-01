@@ -13,8 +13,15 @@ import SoundEffects from "@/components/SoundEffects";
 import { DinoState } from "@/types";
 
 export default function Home() {
-  const { gameState, dino, obstacles, clouds, isNightMode, startGame } =
-    useGameLogic();
+  const {
+    gameState,
+    dino,
+    obstacles,
+    clouds,
+    isNightMode,
+    startGame,
+    setPlayer,
+  } = useGameLogic();
 
   const handleStartGame = () => {
     if (!gameState.isPlaying && !gameState.isGameOver) {
@@ -73,11 +80,18 @@ export default function Home() {
               score={gameState.score}
               highScore={gameState.highScore}
               isNightMode={isNightMode}
+              player={gameState.player}
+              highScorePlayer={gameState.highScorePlayer}
+              setPlayer={setPlayer}
             />
 
             {/* Game over screen */}
             {gameState.isGameOver && (
-              <GameOver score={gameState.score} onRestart={startGame} />
+              <GameOver
+                player={gameState.player}
+                score={gameState.score}
+                onRestart={startGame}
+              />
             )}
 
             {/* Start game instructions */}
