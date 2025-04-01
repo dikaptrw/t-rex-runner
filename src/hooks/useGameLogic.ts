@@ -567,11 +567,29 @@ export const useGameLogic = () => {
   // Add touch event listeners in a useEffect
   useEffect(() => {
     const handleTouchStartWrapper = (e: TouchEvent) => {
+      const scoreWrapper = document.getElementById("scoreWrapper");
+      if (
+        e.target &&
+        scoreWrapper?.contains(e.target as Node) &&
+        !gameState.isPlaying
+      ) {
+        return;
+      }
+
       e.preventDefault();
       handleTouchStart();
     };
 
     const handleTouchEndWrapper = (e: TouchEvent) => {
+      const scoreWrapper = document.getElementById("scoreWrapper");
+      if (
+        e.target &&
+        scoreWrapper?.contains(e.target as Node) &&
+        !gameState.isPlaying
+      ) {
+        return;
+      }
+
       e.preventDefault();
       handleTouchEnd();
     };
@@ -604,6 +622,7 @@ export const useGameLogic = () => {
         clearTimeout(touchTimerRef.current);
       }
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [handleTouchStart, handleTouchEnd]);
 
   return {

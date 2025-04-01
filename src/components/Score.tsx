@@ -38,6 +38,7 @@ const Score: React.FC<ScoreProps> = ({
 
   return (
     <div
+      id="scoreWrapper"
       className={`absolute z-[1] right-4 top-4 left-4 font-mono text-lg ${
         isNightMode ? "text-white" : "text-black"
       }`}
@@ -60,6 +61,12 @@ const Score: React.FC<ScoreProps> = ({
             className="border-b focus:outline-none py-0 px-1 min-w-[86px] max-w-[250px]"
             style={{ width }}
             onKeyDown={(e) => {
+              e.stopPropagation();
+            }}
+            onClick={(e) => {
+              e.stopPropagation();
+            }}
+            onTouchStart={(e) => {
               e.stopPropagation();
             }}
             onChange={(e) => setPlayer?.(e.target.value || "")}
