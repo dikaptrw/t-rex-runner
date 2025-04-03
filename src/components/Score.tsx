@@ -1,3 +1,4 @@
+import { cn } from "@/utils";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 
 interface ScoreProps {
@@ -101,7 +102,7 @@ const Score: React.FC<ScoreProps> = ({
     >
       <div className="flex justify-between gap-4">
         <label className="flex items-center gap-2">
-          <span>Player name:</span>
+          <span>Player:</span>
 
           {/* hidden span for input width calculation */}
           <span
@@ -114,6 +115,7 @@ const Score: React.FC<ScoreProps> = ({
           <input
             ref={inputRef}
             type="text"
+            placeholder="Name"
             disabled={isPlaying}
             value={player}
             className="border-b focus:outline-none py-0 px-1 min-w-[50px] max-w-[250px]"
@@ -127,12 +129,23 @@ const Score: React.FC<ScoreProps> = ({
         </label>
 
         <div className="flex gap-2">
-          <div>HI</div>
+          <div className={cn(isNightMode ? "text-gray-400" : "text-gray-500")}>
+            HI
+          </div>
           <div>
             {formattedHighScore}
-            {highScorePlayer && <>({highScorePlayer})</>}
+            {highScorePlayer && (
+              <span className="text-sm">({highScorePlayer})</span>
+            )}
           </div>
-          <div className="mx-2">{formattedScore}</div>
+          <div
+            className={cn(
+              "mx-2",
+              isNightMode ? "text-yellow-400" : "text-black"
+            )}
+          >
+            {formattedScore}
+          </div>
         </div>
       </div>
     </div>
