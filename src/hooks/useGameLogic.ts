@@ -43,6 +43,7 @@ export const useGameLogic = () => {
   const [obstacles, setObstacles] = useState<Obstacle[]>([]);
   const [clouds, setClouds] = useState<Cloud[]>([]);
   const [isNightMode, setIsNightMode] = useState(false);
+  const [isMuted, setIsMuted] = useState(false);
 
   // Touch control references
   const isTouchingRef = useRef<boolean>(false);
@@ -631,6 +632,8 @@ export const useGameLogic = () => {
     obstacles,
     clouds,
     isNightMode,
+    isMuted,
+    setIsMuted,
     startGame,
     jump,
     duck,

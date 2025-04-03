@@ -21,6 +21,8 @@ export default function Home() {
     isNightMode,
     startGame,
     setPlayer,
+    isMuted,
+    setIsMuted,
   } = useGameLogic();
 
   const handleStartGame = () => {
@@ -84,6 +86,8 @@ export default function Home() {
               highScorePlayer={gameState.highScorePlayer}
               setPlayer={setPlayer}
               isPlaying={gameState.isPlaying}
+              isMuted={isMuted}
+              setIsMuted={setIsMuted}
             />
 
             {/* Game over screen */}
@@ -123,6 +127,7 @@ export default function Home() {
             isGameOver={gameState.isGameOver}
             isJumping={dino.state === DinoState.JUMPING}
             score={gameState.score}
+            isMuted={isMuted}
           />
         </div>
       </div>

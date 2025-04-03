@@ -1,4 +1,5 @@
 import { cn } from "@/utils";
+import { RiVolumeMuteLine, RiVolumeUpLine } from "@remixicon/react";
 import React, {
   useCallback,
   useEffect,
@@ -15,6 +16,8 @@ interface GameHUDProps {
   isNightMode?: boolean;
   isPlaying?: boolean;
   setPlayer?: (name: string) => void;
+  isMuted?: boolean;
+  setIsMuted?: (name: boolean) => void;
 }
 
 const MAX_PLAYER_NAME_LENGTH = 10;
@@ -28,6 +31,8 @@ const GameHUD: React.FC<GameHUDProps> = ({
   player,
   isPlaying,
   setPlayer,
+  isMuted,
+  setIsMuted,
 }) => {
   // Format score with leading zeros
   const formatScore = (score: number): string => {
@@ -47,6 +52,13 @@ const GameHUD: React.FC<GameHUDProps> = ({
 
     return currentScore > currentHighScore;
   }, [isPlaying, score, highScore]);
+  const VolumeIcon = useMemo(() => {
+    if (isMuted) {
+      return RiVolumeMuteLine;
+    } else {
+      return RiVolumeUpLine;
+    }
+  }, [isMuted]);
 
   useEffect(() => {
     if (hiddenSpanRef.current) {
@@ -64,7 +76,7 @@ const GameHUD: React.FC<GameHUDProps> = ({
     }
   }, [isPlaying, player, savePlayerName]);
 
-  const handleOnChange = useCallback(
+  const handleInputOnChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       // Limit length client-side for immediate feedback
       const value = e.target.value.slice(0, MAX_PLAYER_NAME_LENGTH);
@@ -73,7 +85,7 @@ const GameHUD: React.FC<GameHUDProps> = ({
     [setPlayer]
   );
 
-  const handleKeyDown = useCallback(
+  const handleInputKeyDown = useCallback(
     (e: React.KeyboardEvent<HTMLInputElement>) => {
       e.stopPropagation(); // Prevent game controls from firing
       if (e.key === "Enter") {
@@ -84,7 +96,7 @@ const GameHUD: React.FC<GameHUDProps> = ({
     [savePlayerName]
   );
 
-  const handleBlur = useCallback(
+  const handleInputBlur = useCallback(
     (e: React.FocusEvent<HTMLInputElement>) => {
       e.stopPropagation(); // Prevent clicks from affecting game
       savePlayerName();
@@ -104,6 +116,14 @@ const GameHUD: React.FC<GameHUDProps> = ({
       e.stopPropagation(); // Prevent touches from affecting game
     },
     []
+  );
+
+  const handleVolumeClick = useCallback(
+    (e: React.MouseEvent<HTMLButtonElement>) => {
+      e.stopPropagation(); // Prevent touches from affecting game
+      setIsMuted?.(!isMuted);
+    },
+    [isMuted, setIsMuted]
   );
 
   return (
@@ -134,11 +154,11 @@ const GameHUD: React.FC<GameHUDProps> = ({
             value={player}
             className="border-b focus:outline-none py-0 px-1 min-w-[50px] max-w-[250px]"
             style={{ width }}
-            onBlur={handleBlur}
-            onKeyDown={handleKeyDown}
+            onBlur={handleInputBlur}
+            onKeyDown={handleInputKeyDown}
             onClick={handleInputClick}
             onTouchStart={handleInputTouch}
-            onChange={handleOnChange}
+            onChange={handleInputOnChange}
           />
         </label>
 
@@ -170,6 +190,17 @@ const GameHUD: React.FC<GameHUDProps> = ({
           <div className={cn(isNightMode ? "text-yellow-400" : "text-black")}>
             {formattedScore}
           </div>
+
+          {/* Mute/Unmute */}
+          <button
+            onClick={handleVolumeClick}
+            className={cn(
+              "cursor-pointer",
+              isNightMode ? "text-gray-400" : "text-gray-500"
+            )}
+          >
+            <VolumeIcon className="w-5 h-5" />
+          </button>
         </div>
       </div>
     </div>
