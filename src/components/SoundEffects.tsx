@@ -1,9 +1,10 @@
-import React, { useEffect, useRef } from "react";
+import React, { useCallback, useEffect, useRef } from "react";
 
 interface SoundEffectsProps {
   isPlaying: boolean;
   isGameOver: boolean;
   isJumping: boolean;
+  isMuted?: boolean;
   score: number;
 }
 
@@ -17,12 +18,14 @@ const SOUNDS = {
 // Volume levels
 const VOLUME = {
   DEFAULT: 0.1,
+  MUTED: 0,
 } as const;
 
 const SoundEffects: React.FC<SoundEffectsProps> = ({
   isPlaying,
   isGameOver,
   isJumping,
+  isMuted = false,
   score,
 }) => {
   // Refs for audio elements
@@ -34,33 +37,47 @@ const SoundEffects: React.FC<SoundEffectsProps> = ({
   /**
    * Helper function to play a sound with proper error handling
    */
-  const playSound = (soundRef?: React.RefObject<HTMLAudioElement | null>) => {
-    if (!soundRef || !soundRef.current) return;
+  const playSound = useCallback(
+    (soundRef: React.RefObject<HTMLAudioElement | null>) => {
+      if (!soundRef || !soundRef.current || isMuted) return;
 
-    try {
-      soundRef.current.volume = VOLUME.DEFAULT;
-      soundRef.current.currentTime = 0;
-      soundRef.current.play().catch((error) => {
-        console.error("Error playing sound:", error);
-      });
-    } catch (error) {
-      console.error("Error setting up sound:", error);
-    }
-  };
+      try {
+        soundRef.current.volume = VOLUME.DEFAULT;
+        soundRef.current.currentTime = 0;
+        soundRef.current.play().catch((error) => {
+          console.error("Error playing sound:", error);
+        });
+      } catch (error) {
+        console.error("Error setting up sound:", error);
+      }
+    },
+    [isMuted]
+  );
+
+  // Update volume when mute state changes
+  useEffect(() => {
+    const volume = isMuted ? VOLUME.MUTED : VOLUME.DEFAULT;
+
+    [jumpSoundRef, gameOverSoundRef, pointSoundRef].forEach((ref) => {
+      if (ref.current) {
+        ref.current.volume = volume;
+      }
+    });
+  }, [isMuted]);
 
   // Handle jump sound
   useEffect(() => {
     if (isJumping && isPlaying) {
       playSound(jumpSoundRef);
     }
-  }, [isJumping, isPlaying]);
+  }, [isJumping, isPlaying, playSound]);
 
   // Handle game over sound
   useEffect(() => {
     if (isGameOver) {
       playSound(gameOverSoundRef);
     }
-  }, [isGameOver]);
+  }, [isGameOver, playSound]);
 
   // Handle point sound at every 100 points milestone
   useEffect(() => {
@@ -72,7 +89,7 @@ const SoundEffects: React.FC<SoundEffectsProps> = ({
     }
 
     prevScoreRef.current = score;
-  }, [score, isPlaying]);
+  }, [score, isPlaying, isMuted, playSound]);
 
   return (
     <div aria-hidden="true" style={{ display: "none" }}>
