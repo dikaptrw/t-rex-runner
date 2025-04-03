@@ -2,6 +2,29 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.2.0] - 2025-04-03
+
+### Added
+
+- Added mute functionality to `SoundEffects`.
+- Integrated mute state with game logic.
+- Highlighted new high score.
+
+### Updated
+
+- Renamed `Score` component to `GameHUD`.
+- Improved `SoundEffects` component structure.
+- Cleaned up `Score` component code.
+- Adjusted style for day and night mode.
+- Adjusted game over UI when night mode.
+- Updated game container border style.
+
+### Misc
+
+- Installed `@remixicon/react` dependency.
+- Added GitHub Actions workflow for CI/CD.
+- Removed unnecessary comments.
+
 ## [1.1.0] - 2025-04-01
 
 ### Added
