@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef } from "react";
+import React, { memo, useCallback, useEffect, useRef } from "react";
 
 interface SoundEffectsProps {
   isPlaying: boolean;
@@ -77,7 +77,8 @@ const SoundEffects: React.FC<SoundEffectsProps> = ({
     if (isGameOver) {
       playSound(gameOverSoundRef);
     }
-  }, [isGameOver, playSound]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isGameOver]);
 
   // Handle point sound at every 100 points milestone
   useEffect(() => {
@@ -106,4 +107,4 @@ const SoundEffects: React.FC<SoundEffectsProps> = ({
   );
 };
 
-export default SoundEffects;
+export default memo(SoundEffects);
