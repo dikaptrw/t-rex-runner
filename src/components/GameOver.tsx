@@ -1,21 +1,34 @@
-import React from "react";
+import React, { useRef } from "react";
 import { GAME_CONFIG } from "@/types";
+import { cn } from "@/utils";
 
 interface GameOverProps {
   score: number;
   onRestart: () => void;
   player: string;
+  isNightMode: boolean;
 }
 
-const GameOver: React.FC<GameOverProps> = ({ score, player, onRestart }) => {
+const GameOver: React.FC<GameOverProps> = ({
+  score,
+  player,
+  onRestart,
+  isNightMode,
+}) => {
   const blockSize = GAME_CONFIG.BLOCK_SIZE;
+  const currentPlayer = useRef(player);
 
   return (
-    <div className="absolute inset-0 flex flex-col items-center justify-center bg-white bg-opacity-70">
+    <div
+      className={cn(
+        "absolute inset-0 flex flex-col items-center justify-center bg-opacity-70",
+        isNightMode ? "bg-black text-white" : "bg-white text-black"
+      )}
+    >
       <div className="text-center mt-5">
         <h2 className="text-xl font-bold mb-4">GAME OVER</h2>
         <p className="text-sm mb-3">
-          Score: {Math.floor(score)} ({player || "Unknown"})
+          Score: {Math.floor(score)} ({currentPlayer.current})
         </p>
 
         {/* Restart button using block-based design */}
@@ -25,7 +38,10 @@ const GameOver: React.FC<GameOverProps> = ({ score, player, onRestart }) => {
           style={{ width: `${6 * blockSize}px`, height: `${6 * blockSize}px` }}
         >
           <div
-            className="absolute bg-black rounded-full"
+            className={cn(
+              "absolute rounded-full",
+              isNightMode ? "bg-white" : "bg-black"
+            )}
             style={{
               width: `${5 * blockSize}px`,
               height: `${5 * blockSize}px`,
@@ -36,7 +52,7 @@ const GameOver: React.FC<GameOverProps> = ({ score, player, onRestart }) => {
 
           {/* Restart arrow */}
           <div
-            className="absolute bg-white"
+            className={cn("absolute", isNightMode ? "bg-black" : "bg-white")}
             style={{
               width: `${3 * blockSize}px`,
               height: `${blockSize}px`,

@@ -92,6 +92,7 @@ export default function Home() {
                 player={gameState.player}
                 score={gameState.score}
                 onRestart={startGame}
+                isNightMode={isNightMode}
               />
             )}
 
