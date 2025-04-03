@@ -7,11 +7,7 @@ interface GameContainerProps {
   gameState: GameState;
 }
 
-const GameContainer = ({
-  isNightMode,
-  children,
-  gameState,
-}: GameContainerProps) => {
+const GameContainer = ({ isNightMode, children }: GameContainerProps) => {
   return (
     <div
       className={`relative overflow-hidden ${
@@ -21,10 +17,7 @@ const GameContainer = ({
         width: `${GAME_CONFIG.CANVAS_WIDTH}px`,
         height: `${GAME_CONFIG.CANVAS_HEIGHT}px`,
         margin: "0 auto",
-        border:
-          isNightMode && !gameState.isGameOver
-            ? "transparent"
-            : "1px solid #ccc",
+        border: isNightMode ? "transparent" : "1px solid #ccc",
       }}
     >
       {children}
