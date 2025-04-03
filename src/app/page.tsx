@@ -121,7 +121,6 @@ export default function Home() {
           <SoundEffects
             isPlaying={gameState.isPlaying}
             isGameOver={gameState.isGameOver}
-            isDucking={dino.state === DinoState.DUCKING}
             isJumping={dino.state === DinoState.JUMPING}
             score={gameState.score}
           />

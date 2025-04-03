@@ -3,10 +3,21 @@ import React, { useEffect, useRef } from "react";
 interface SoundEffectsProps {
   isPlaying: boolean;
   isGameOver: boolean;
-  isDucking: boolean;
   isJumping: boolean;
   score: number;
 }
+
+// Audio file paths
+const SOUNDS = {
+  JUMP: "/sounds/jump.mp3",
+  GAME_OVER: "/sounds/game-over.mp3",
+  POINT: "/sounds/point.mp3",
+} as const;
+
+// Volume levels
+const VOLUME = {
+  DEFAULT: 0.1,
+} as const;
 
 const SoundEffects: React.FC<SoundEffectsProps> = ({
   isPlaying,
@@ -14,66 +25,65 @@ const SoundEffects: React.FC<SoundEffectsProps> = ({
   isJumping,
   score,
 }) => {
-  // References to audio elements
+  // Refs for audio elements
   const jumpSoundRef = useRef<HTMLAudioElement | null>(null);
   const gameOverSoundRef = useRef<HTMLAudioElement | null>(null);
   const pointSoundRef = useRef<HTMLAudioElement | null>(null);
+  const prevScoreRef = useRef(score);
 
-  // Track previous score to detect milestone points
-  const prevScoreRef = useRef(0);
+  /**
+   * Helper function to play a sound with proper error handling
+   */
+  const playSound = (soundRef?: React.RefObject<HTMLAudioElement | null>) => {
+    if (!soundRef || !soundRef.current) return;
 
-  // Play jump sound
-  useEffect(() => {
-    if (isJumping && jumpSoundRef.current && isPlaying) {
-      jumpSoundRef.current.volume = 0.1;
-      jumpSoundRef.current.currentTime = 0;
-      jumpSoundRef.current
-        .play()
-        .catch((e) => console.error("Error playing jump sound:", e));
+    try {
+      soundRef.current.volume = VOLUME.DEFAULT;
+      soundRef.current.currentTime = 0;
+      soundRef.current.play().catch((error) => {
+        console.error("Error playing sound:", error);
+      });
+    } catch (error) {
+      console.error("Error setting up sound:", error);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isJumping]);
+  };
 
-  // Play game over sound
+  // Handle jump sound
   useEffect(() => {
-    if (isGameOver && gameOverSoundRef.current) {
-      gameOverSoundRef.current.volume = 0.1;
-      gameOverSoundRef.current.currentTime = 0;
-      gameOverSoundRef.current
-        .play()
-        .catch((e) => console.error("Error playing game over sound:", e));
+    if (isJumping && isPlaying) {
+      playSound(jumpSoundRef);
+    }
+  }, [isJumping, isPlaying]);
+
+  // Handle game over sound
+  useEffect(() => {
+    if (isGameOver) {
+      playSound(gameOverSoundRef);
     }
   }, [isGameOver]);
 
-  // Play point sound at every 100 points
+  // Handle point sound at every 100 points milestone
   useEffect(() => {
-    if (
-      isPlaying &&
-      pointSoundRef.current &&
-      Math.floor(score / 100) > Math.floor(prevScoreRef.current / 100)
-    ) {
-      pointSoundRef.current.volume = 0.1;
-      pointSoundRef.current.currentTime = 0;
-      pointSoundRef.current
-        .play()
-        .catch((e) => console.error("Error playing point sound:", e));
-    }
-    prevScoreRef.current = score;
+    const currentMilestone = Math.floor(score / 100);
+    const previousMilestone = Math.floor(prevScoreRef.current / 100);
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [score]);
+    if (isPlaying && currentMilestone > previousMilestone) {
+      playSound(pointSoundRef);
+    }
+
+    prevScoreRef.current = score;
+  }, [score, isPlaying]);
 
   return (
-    <div className="hidden">
-      {/* Audio elements */}
+    <div aria-hidden="true" style={{ display: "none" }}>
       <audio ref={jumpSoundRef} preload="auto">
-        <source src="/sounds/jump.mp3" type="audio/mpeg" />
+        <source src={SOUNDS.JUMP} type="audio/mpeg" />
       </audio>
       <audio ref={gameOverSoundRef} preload="auto">
-        <source src="/sounds/game-over.mp3" type="audio/mpeg" />
+        <source src={SOUNDS.GAME_OVER} type="audio/mpeg" />
       </audio>
       <audio ref={pointSoundRef} preload="auto">
-        <source src="/sounds/point.mp3" type="audio/mpeg" />
+        <source src={SOUNDS.POINT} type="audio/mpeg" />
       </audio>
     </div>
   );
