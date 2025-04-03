@@ -1,20 +1,17 @@
 import React from "react";
-import { GAME_CONFIG } from "@/types"; // Assuming BLOCK_SIZE is here
-import { cn } from "@/utils"; // Classname utility (like clsx or tailwind-merge)
+import { GAME_CONFIG } from "@/types";
+import { cn } from "@/utils";
 
 interface CloudProps {
   x: number; // Position from left (pixels)
   y: number; // Position from top (pixels)
   isNightMode: boolean;
-  // Optional: add other props like scale or custom styles if needed
-  // scale?: number;
-  // className?: string;
 }
 
 // Define base styles for cloud puffs to avoid repetition
 const puffBaseClasses = "absolute rounded-full";
 
-const Cloud = ({ x, y, isNightMode /*, className, scale = 1 */ }: CloudProps) => {
+const Cloud = ({ x, y, isNightMode }: CloudProps) => {
   // Use a potentially more descriptive name or keep BLOCK_SIZE if preferred
   const baseSize = GAME_CONFIG.BLOCK_SIZE;
 
@@ -36,7 +33,7 @@ const Cloud = ({ x, y, isNightMode /*, className, scale = 1 */ }: CloudProps) =>
 
   // --- Define Colors (using Tailwind classes) ---
   // Feel free to change these for your desired look
-  const dayColor = "bg-gray-200";   // A lighter, softer gray
+  const dayColor = "bg-gray-200"; // A lighter, softer gray
   const nightColor = "bg-slate-700"; // A darker blue-gray
 
   const cloudColor = isNightMode ? nightColor : dayColor;
