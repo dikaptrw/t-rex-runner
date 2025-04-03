@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 
 interface ScoreProps {
   score: number;
@@ -9,6 +9,9 @@ interface ScoreProps {
   isPlaying?: boolean;
   setPlayer?: (name: string) => void;
 }
+
+const MAX_PLAYER_NAME_LENGTH = 10;
+export const DEFAULT_PLAYER_NAME = "Anonym";
 
 const Score: React.FC<ScoreProps> = ({
   score,
@@ -26,15 +29,67 @@ const Score: React.FC<ScoreProps> = ({
 
   const formattedScore = formatScore(Math.floor(score));
   const formattedHighScore = formatScore(Math.floor(highScore));
-  const spanRef = useRef<HTMLSpanElement>(null);
+  const hiddenSpanRef = useRef<HTMLSpanElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const [width, setWidth] = useState(0);
 
   useEffect(() => {
-    if (spanRef.current) {
-      setWidth(spanRef.current.offsetWidth - 4); // Add some padding
+    if (hiddenSpanRef.current) {
+      setWidth(hiddenSpanRef.current.offsetWidth - 4); // Add some padding
     }
   }, [player]);
+
+  const savePlayerName = useCallback(() => {
+    setPlayer?.(player || DEFAULT_PLAYER_NAME);
+  }, [player, setPlayer]);
+
+  useEffect(() => {
+    if (isPlaying && !player) {
+      savePlayerName();
+    }
+  }, [isPlaying, player, savePlayerName]);
+
+  const handleOnChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      // Limit length client-side for immediate feedback
+      const value = e.target.value.slice(0, MAX_PLAYER_NAME_LENGTH);
+      setPlayer?.(value);
+    },
+    [setPlayer]
+  );
+
+  const handleKeyDown = useCallback(
+    (e: React.KeyboardEvent<HTMLInputElement>) => {
+      e.stopPropagation(); // Prevent game controls from firing
+      if (e.key === "Enter") {
+        savePlayerName();
+        e.currentTarget.blur(); // Remove focus after Enter
+      }
+    },
+    [savePlayerName]
+  );
+
+  const handleBlur = useCallback(
+    (e: React.FocusEvent<HTMLInputElement>) => {
+      e.stopPropagation(); // Prevent clicks from affecting game
+      savePlayerName();
+    },
+    [savePlayerName]
+  );
+
+  const handleInputClick = useCallback(
+    (e: React.MouseEvent<HTMLInputElement>) => {
+      e.stopPropagation(); // Prevent clicks from affecting game
+    },
+    []
+  );
+
+  const handleInputTouch = useCallback(
+    (e: React.TouchEvent<HTMLInputElement>) => {
+      e.stopPropagation(); // Prevent touches from affecting game
+    },
+    []
+  );
 
   return (
     <div
@@ -47,34 +102,27 @@ const Score: React.FC<ScoreProps> = ({
       <div className="flex justify-between gap-4">
         <label className="flex items-center gap-2">
           <span>Player name:</span>
+
+          {/* hidden span for input width calculation */}
           <span
-            ref={spanRef}
+            ref={hiddenSpanRef}
             className="absolute invisible whitespace-pre px-2"
           >
             {player || " "}
           </span>
+
           <input
             ref={inputRef}
             type="text"
             disabled={isPlaying}
-            value={isPlaying ? player || "Unknown" : player}
-            className="border-b focus:outline-none py-0 px-1 min-w-[86px] max-w-[250px]"
+            value={player}
+            className="border-b focus:outline-none py-0 px-1 min-w-[50px] max-w-[250px]"
             style={{ width }}
-            onKeyDown={(e) => {
-              e.stopPropagation();
-            }}
-            onClick={(e) => {
-              e.stopPropagation();
-            }}
-            onTouchStart={(e) => {
-              e.stopPropagation();
-            }}
-            onChange={(e) => {
-              const value = e.target.value || "";
-              if (value.length < 10) {
-                setPlayer?.(value);
-              }
-            }}
+            onBlur={handleBlur}
+            onKeyDown={handleKeyDown}
+            onClick={handleInputClick}
+            onTouchStart={handleInputTouch}
+            onChange={handleOnChange}
           />
         </label>
 

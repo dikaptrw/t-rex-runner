@@ -159,7 +159,7 @@ export const useGameLogic = () => {
 
       if (currentNewHighScore > prev.highScore) {
         newHighScore = currentNewHighScore;
-        newHighScorePlayer = gameState.player || "Unknown";
+        newHighScorePlayer = gameState.player;
 
         if (process.env.NEXT_PUBLIC_HIGH_SCORE_MODE === "firestore") {
           updateHighScoreFirestore({
