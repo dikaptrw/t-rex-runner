@@ -1,5 +1,11 @@
 import { cn } from "@/utils";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 
 interface ScoreProps {
   score: number;
@@ -33,6 +39,14 @@ const Score: React.FC<ScoreProps> = ({
   const hiddenSpanRef = useRef<HTMLSpanElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const [width, setWidth] = useState(0);
+  const isNewHighScore = useMemo<boolean>(() => {
+    if (!isPlaying) return false;
+
+    const currentScore = Math.floor(score);
+    const currentHighScore = Math.floor(highScore);
+
+    return currentScore > currentHighScore;
+  }, [isPlaying, score, highScore]);
 
   useEffect(() => {
     if (hiddenSpanRef.current) {
@@ -128,22 +142,32 @@ const Score: React.FC<ScoreProps> = ({
           />
         </label>
 
-        <div className="flex gap-2">
-          <div className={cn(isNightMode ? "text-gray-400" : "text-gray-500")}>
-            HI
+        <div className="flex items-center gap-5">
+          {isNewHighScore && (
+            <div
+              className={cn(
+                "uppercase text-sm animate-pulse font-bold",
+                isNightMode ? "text-yellow-400" : "text-black"
+              )}
+            >
+              New HI!
+            </div>
+          )}
+
+          <div className="flex items-center gap-1.5">
+            <div
+              className={cn(isNightMode ? "text-gray-400" : "text-gray-500")}
+            >
+              HI
+            </div>
+            <div>
+              {formattedHighScore}
+              {highScorePlayer && (
+                <span className="text-sm">({highScorePlayer})</span>
+              )}
+            </div>
           </div>
-          <div>
-            {formattedHighScore}
-            {highScorePlayer && (
-              <span className="text-sm">({highScorePlayer})</span>
-            )}
-          </div>
-          <div
-            className={cn(
-              "mx-2",
-              isNightMode ? "text-yellow-400" : "text-black"
-            )}
-          >
+          <div className={cn(isNightMode ? "text-yellow-400" : "text-black")}>
             {formattedScore}
           </div>
         </div>
