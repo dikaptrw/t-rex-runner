@@ -7,7 +7,7 @@ import Dino from "@/components/Dino";
 import Ground from "@/components/Ground";
 import Obstacle from "@/components/Obstacle";
 import Cloud from "@/components/Cloud";
-import Score from "@/components/Score";
+import GameHUD from "@/components/GameHUD";
 import GameOver from "@/components/GameOver";
 import SoundEffects from "@/components/SoundEffects";
 import { DinoState } from "@/types";
@@ -75,8 +75,8 @@ export default function Home() {
               />
             ))}
 
-            {/* Score */}
-            <Score
+            {/* Game Heads-Up Display */}
+            <GameHUD
               score={gameState.score}
               highScore={gameState.highScore}
               isNightMode={isNightMode}

@@ -7,7 +7,7 @@ import React, {
   useState,
 } from "react";
 
-interface ScoreProps {
+interface GameHUDProps {
   score: number;
   highScore: number;
   player?: string;
@@ -20,7 +20,7 @@ interface ScoreProps {
 const MAX_PLAYER_NAME_LENGTH = 10;
 export const DEFAULT_PLAYER_NAME = "Anonym";
 
-const Score: React.FC<ScoreProps> = ({
+const GameHUD: React.FC<GameHUDProps> = ({
   score,
   highScore,
   highScorePlayer,
@@ -176,4 +176,4 @@ const Score: React.FC<ScoreProps> = ({
   );
 };
 
-export default Score;
+export default GameHUD;
