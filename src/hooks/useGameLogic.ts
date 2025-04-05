@@ -12,11 +12,15 @@ import {
   collection,
   doc,
   getDoc,
+  onSnapshot,
   setDoc,
   updateDoc,
 } from "@firebase/firestore";
 import { ENV } from "@/constants";
 import db from "@/utils/firestore";
+
+const HIGH_SCORE_STORAGE_KEY = "trexHighScore";
+const HIGH_SCORE_PLAYER_STORAGE_KEY = "trexHighScorePlayer";
 
 export const useGameLogic = () => {
   // Game state
@@ -77,9 +81,23 @@ export const useGameLogic = () => {
           }));
         }
       });
+
+      // Listen for changes in the Firestore document
+      const unsubscribe = onSnapshot(docRef, (data) => {
+        setGameState((prev) => ({
+          ...prev,
+          highScore: data.data()?.highScore || prev.highScore,
+          highScorePlayer: data.data()?.playerName || prev.highScorePlayer,
+        }));
+      });
+
+      // Cleanup the listener when the component unmounts
+      return () => unsubscribe();
     } else {
-      const storedHighScore = localStorage.getItem("trexHighScore");
-      const storedHighScorePlayer = localStorage.getItem("trexHighScorePlayer");
+      const storedHighScore = localStorage.getItem(HIGH_SCORE_STORAGE_KEY);
+      const storedHighScorePlayer = localStorage.getItem(
+        HIGH_SCORE_PLAYER_STORAGE_KEY
+      );
 
       setGameState((prev) => ({
         ...prev,
@@ -169,9 +187,9 @@ export const useGameLogic = () => {
           });
         } else {
           // Save high score to local storage
-          localStorage.setItem("trexHighScore", newHighScore.toString());
+          localStorage.setItem(HIGH_SCORE_STORAGE_KEY, newHighScore.toString());
           localStorage.setItem(
-            "trexHighScorePlayer",
+            HIGH_SCORE_PLAYER_STORAGE_KEY,
             newHighScorePlayer.toString()
           );
         }
