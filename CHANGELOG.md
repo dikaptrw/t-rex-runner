@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.3.0] - 2025-04-05
+
+### Added
+
+- Added the `firestore` listener for real-time high score data updates.
+
 ## [1.2.0] - 2025-04-03
 
 ### Added
